@@ -7,10 +7,10 @@
 
   <style>
     :root {
-      --c1: rgba(255, 203, 76, 0.28);
-      --c2: rgba(91, 255, 174, 0.16);
-      --accent: #ffd76a;
-      --glow: rgba(255, 215, 106, 0.5);
+      --c1: rgba(255, 203, 76, 0.42);
+      --c2: rgba(91, 255, 174, 0.24);
+      --accent: #ff9f2f;
+      --glow: rgba(255, 170, 60, 0.52);
     }
 
     * {
@@ -22,54 +22,67 @@
       margin: 0;
       min-height: 100%;
       background: #0b0b0b;
-      color: #ffffff;
+      color: #1d1408;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
       display: grid;
       place-items: center;
-      padding: 18px;
+      padding: 16px;
     }
 
     .widget {
       width: 100%;
-      max-width: 540px;
+      max-width: 980px;
+      min-height: 330px;
       position: relative;
       overflow: hidden;
       padding: 30px;
-      border-radius: 32px;
+      border-radius: 34px;
+      color: #1d1408;
       background:
-        radial-gradient(circle at top left, var(--c1), transparent 34%),
-        radial-gradient(circle at bottom right, var(--c2), transparent 38%),
-        linear-gradient(145deg, #141414, #050505);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.6);
+        radial-gradient(circle at 4% 0%, var(--c1), transparent 34%),
+        radial-gradient(circle at 100% 100%, var(--c2), transparent 38%),
+        linear-gradient(135deg, #fff7d8 0%, #ffd98f 42%, #ffb357 100%);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      box-shadow:
+        0 28px 90px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
       transition: background 1s ease;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-areas:
+        "header header"
+        "title countdown"
+        "subtitle countdown"
+        "progress progress"
+        "message fruits";
+      gap: 0 28px;
     }
 
     .glow {
       position: absolute;
       border-radius: 999px;
-      filter: blur(50px);
+      filter: blur(52px);
       pointer-events: none;
-      opacity: 0.65;
+      opacity: 0.72;
     }
 
     .glow-1 {
-      width: 190px;
-      height: 190px;
-      top: -70px;
-      right: -60px;
+      width: 230px;
+      height: 230px;
+      top: -90px;
+      right: -70px;
       background: var(--glow);
       animation: floatOne 7s ease-in-out infinite alternate;
     }
 
     .glow-2 {
-      width: 140px;
-      height: 140px;
+      width: 170px;
+      height: 170px;
       left: -60px;
-      bottom: 20px;
+      bottom: -30px;
       background: var(--c2);
       animation: floatTwo 8s ease-in-out infinite alternate;
     }
@@ -86,139 +99,155 @@
     }
 
     .header {
+      grid-area: header;
       display: flex;
       justify-content: space-between;
       gap: 10px;
       align-items: center;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
     .badge,
     .phase {
-      padding: 8px 12px;
+      padding: 8px 13px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      color: rgba(40, 22, 0, 0.75);
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 850;
       text-transform: uppercase;
       letter-spacing: 0.08em;
+      backdrop-filter: blur(14px);
     }
 
     .badge {
-      color: var(--accent);
+      color: #5c3100;
     }
 
     .phase {
-      color: rgba(255, 255, 255, 0.55);
+      color: rgba(40, 22, 0, 0.58);
     }
 
     h1 {
+      grid-area: title;
       margin: 0;
-      font-size: clamp(42px, 9vw, 68px);
-      line-height: 0.9;
-      letter-spacing: -0.07em;
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 0.88;
+      letter-spacing: -0.075em;
+      color: #1c1003;
     }
 
     .subtitle {
-      margin: 16px 0 28px;
-      max-width: 360px;
-      color: rgba(255, 255, 255, 0.68);
+      grid-area: subtitle;
+      margin: 16px 0 0;
+      max-width: 390px;
+      color: rgba(42, 23, 0, 0.68);
       font-size: 15px;
       line-height: 1.5;
     }
 
     .countdown {
+      grid-area: countdown;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 11px;
+      align-self: center;
     }
 
     .box {
-      padding: 18px 10px 16px;
-      border-radius: 24px;
+      padding: 20px 10px 17px;
+      border-radius: 25px;
       text-align: center;
-      background: rgba(255, 255, 255, 0.075);
-      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      box-shadow:
+        0 14px 30px rgba(116, 64, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(14px);
     }
 
     .box strong {
       display: block;
-      font-size: clamp(34px, 10vw, 56px);
+      font-size: clamp(34px, 5.5vw, 58px);
       line-height: 1;
-      font-weight: 900;
-      letter-spacing: -0.06em;
-      text-shadow: 0 0 24px var(--glow);
+      font-weight: 950;
+      letter-spacing: -0.07em;
+      color: #211306;
+      text-shadow: 0 0 22px rgba(255, 255, 255, 0.8);
     }
 
     .box span {
       display: block;
       margin-top: 7px;
-      color: rgba(255, 255, 255, 0.46);
+      color: rgba(40, 22, 0, 0.52);
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 850;
       text-transform: uppercase;
       letter-spacing: 0.12em;
     }
 
     .progress-card {
-      margin-top: 24px;
-      padding: 20px;
-      border-radius: 26px;
+      grid-area: progress;
+      margin-top: 28px;
+      padding: 18px 20px 20px;
+      border-radius: 28px;
       background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.045));
-      border: 1px solid rgba(255, 255, 255, 0.12);
+        linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.32));
+      border: 1px solid rgba(255, 255, 255, 0.55);
       box-shadow:
-        0 0 38px var(--glow),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 18px 44px rgba(107, 55, 0, 0.16),
+        0 0 34px rgba(255, 179, 72, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(16px);
     }
 
     .progress-top {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: flex-end;
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .progress-label {
       display: block;
-      margin-bottom: 2px;
-      color: rgba(255, 255, 255, 0.55);
-      font-size: 12px;
-      font-weight: 800;
+      margin-bottom: 1px;
+      color: rgba(42, 23, 0, 0.56);
+      font-size: 11px;
+      font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
     }
 
     .progress-top strong {
       display: block;
-      color: #ffffff;
-      font-size: clamp(42px, 11vw, 72px);
-      line-height: 0.95;
+      color: #1c1003;
+      font-size: clamp(42px, 7vw, 74px);
+      line-height: 0.9;
       font-weight: 950;
-      letter-spacing: -0.07em;
-      text-shadow: 0 0 28px var(--glow);
+      letter-spacing: -0.075em;
     }
 
     .progress-mini {
-      margin-top: 8px;
-      padding: 7px 10px;
+      margin-bottom: 7px;
+      padding: 8px 11px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--accent);
+      background: rgba(255, 255, 255, 0.42);
+      color: #6b3900;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 850;
       white-space: nowrap;
     }
 
     .progress {
-      height: 28px;
+      height: 32px;
       overflow: hidden;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(85, 42, 0, 0.12);
       box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-        inset 0 8px 18px rgba(0, 0, 0, 0.28);
+        inset 0 0 0 1px rgba(87, 45, 0, 0.12),
+        inset 0 8px 18px rgba(70, 35, 0, 0.12);
     }
 
     .bar {
@@ -226,36 +255,41 @@
       height: 100%;
       border-radius: 999px;
       background:
-        linear-gradient(90deg, var(--accent), #fff4bd 55%, #ffffff);
+        linear-gradient(90deg, #ff7a1a, var(--accent), #fff2a6 72%, #ffffff);
       box-shadow:
-        0 0 26px var(--glow),
-        0 0 50px var(--glow);
+        0 0 22px rgba(255, 133, 31, 0.58),
+        0 0 48px var(--glow);
       transition: width 0.6s ease;
     }
 
     .message {
-      min-height: 46px;
-      margin: 20px 0 0;
-      color: rgba(255, 255, 255, 0.78);
+      grid-area: message;
+      align-self: center;
+      min-height: auto;
+      margin: 18px 0 0;
+      color: rgba(42, 23, 0, 0.72);
       font-size: 16px;
       line-height: 1.45;
     }
 
     .fruits {
+      grid-area: fruits;
       display: flex;
+      justify-content: flex-end;
       flex-wrap: wrap;
       gap: 9px;
-      margin-top: 20px;
+      margin-top: 16px;
     }
 
     .fruits span {
       display: grid;
       place-items: center;
-      width: 38px;
-      height: 38px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.075);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      width: 39px;
+      height: 39px;
+      border-radius: 17px;
+      background: rgba(255, 255, 255, 0.44);
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      box-shadow: 0 10px 22px rgba(116, 64, 0, 0.12);
       font-size: 22px;
       animation: pulse 2.8s ease-in-out infinite;
     }
@@ -289,7 +323,7 @@
     @keyframes pulse {
       0%, 100% {
         transform: translateY(0);
-        opacity: 0.78;
+        opacity: 0.86;
       }
 
       50% {
@@ -298,41 +332,48 @@
       }
     }
 
-    @media (max-width: 420px) {
-      body {
-        padding: 12px;
-      }
-
+    @media (max-width: 720px) {
       .widget {
+        max-width: 540px;
+        min-height: auto;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header"
+          "title"
+          "subtitle"
+          "countdown"
+          "progress"
+          "message"
+          "fruits";
         padding: 24px 20px;
-        border-radius: 26px;
+        border-radius: 28px;
       }
 
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
+      .subtitle {
+        margin-bottom: 24px;
       }
 
       .countdown {
-        gap: 8px;
+        align-self: auto;
       }
 
-      .box {
-        padding: 15px 6px 13px;
-        border-radius: 20px;
-      }
-
-      .progress-card {
-        padding: 18px;
+      .header {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
       .progress-top {
         flex-direction: column;
+        align-items: flex-start;
         gap: 8px;
       }
 
       .progress {
-        height: 24px;
+        height: 26px;
+      }
+
+      .fruits {
+        justify-content: flex-start;
       }
     }
   </style>
