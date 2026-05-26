@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brújula Solar PDE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #0b0b0b;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    .solar-widget {
+      width: min(980px, 96vw);
+      min-height: 260px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      padding: 34px;
+      display: flex;
+      align-items: center;
+      gap: 34px;
+      color: #fff8df;
+      background:
+        radial-gradient(circle at 18% 35%, rgba(255, 220, 122, 0.45), transparent 24%),
+        radial-gradient(circle at 82% 20%, rgba(255, 104, 46, 0.32), transparent 28%),
+        linear-gradient(135deg, #190b05 0%, #5a1906 34%, #c94b04 68%, #f2a915 100%);
+      box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.7),
+        0 0 80px rgba(255, 112, 18, 0.22),
+        inset 0 0 0 1px rgba(255, 230, 160, 0.24);
+    }
+
+    .solar-widget::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        conic-gradient(from 180deg,
+          transparent,
+          rgba(255, 232, 151, 0.18),
+          transparent,
+          rgba(255, 127, 44, 0.16),
+          transparent);
+      animation: rotateGlow 18s linear infinite;
+    }
+
+    .solar-widget::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, rgba(255,255,255,0.12), transparent 34%, rgba(255,255,255,0.08));
+      pointer-events: none;
+    }
+
+    .sun-orbit {
+      width: 170px;
+      height: 170px;
+      flex: 0 0 170px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sun-core {
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 52px;
+      background: radial-gradient(circle, #fff3b0 0%, #ffb21c 48%, #ff6a00 100%);
+      box-shadow:
+        0 0 24px rgba(255, 210, 90, 0.9),
+        0 0 72px rgba(255, 110, 0, 0.75);
+      animation: pulseSun 3.2s ease-in-out infinite;
+    }
+
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 234, 169, 0.42);
+    }
+
+    .ring-one {
+      width: 136px;
+      height: 136px;
+      animation: spin 12s linear infinite;
+    }
+
+    .ring-two {
+      width: 168px;
+      height: 168px;
+      border-style: dashed;
+      animation: spinReverse 20s linear infinite;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #ffe8a0;
+      background: rgba(255, 238, 183, 0.12);
+      border: 1px solid rgba(255, 232, 160, 0.24);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(38px, 7vw, 76px);
+      line-height: 0.92;
+      letter-spacing: -0.06em;
+      color: #fff7d7;
+      text-shadow: 0 5px 28px rgba(70, 18, 0, 0.5);
+    }
+
+    .main-line {
+      margin: 18px 0 22px;
+      max-width: 700px;
+      font-size: clamp(17px, 2.2vw, 25px);
+      line-height: 1.35;
+      font-weight: 700;
+      color: #fff0b7;
+    }
+
+    .path {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .path span {
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #2a1002;
+      background: linear-gradient(135deg, #ffe59a, #ffb02e);
+      box-shadow: 0 8px 24px rgba(255, 137, 28, 0.24);
+    }
+
+    .footer {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      font-size: 14px;
+      color: rgba(255, 247, 216, 0.82);
+    }
+
+    .dot {
+      opacity: 0.55;
+    }
+
+    @keyframes rotateGlow {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulseSun {
+      0%, 100% {
+        transform: scale(1);
+        filter: saturate(1);
+      }
+
+      50% {
+        transform: scale(1.06);
+        filter: saturate(1.25);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spinReverse {
+      to {
+        transform: rotate(-360deg);
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        overflow: auto;
+      }
+
+      .solar-widget {
+        flex-direction: column;
+        text-align: center;
+        padding: 28px 22px;
+        min-height: auto;
+      }
+
+      .sun-orbit {
+        width: 140px;
+        height: 140px;
+        flex-basis: 140px;
+      }
+
+      .sun-core {
+        width: 90px;
+        height: 90px;
+        font-size: 44px;
+      }
+
+      .ring-one {
+        width: 118px;
+        height: 118px;
+      }
+
+      .ring-two {
+        width: 142px;
+        height: 142px;
+      }
+
+      .path,
+      .footer {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="solar-widget">
+    <div class="sun-orbit">
+      <div class="sun-core">☀️</div>
+      <div class="ring ring-one"></div>
+      <div class="ring ring-two"></div>
+    </div>
+
+    <section class="content">
+      <div class="eyebrow">Centro de Diseño PDE</div>
+      <h1>Brújula Solar</h1>
+
+      <p class="main-line">
+        Aquí pienso. Aquí diseño. Aquí convierto ideas en proyectos.
+      </p>
+
+      <div class="path">
+        <span>Notion = claridad</span>
+        <span>ClickUp = acción</span>
+        <span>Kajabi = entrega</span>
+      </div>
+
+      <div class="footer">
+        <span id="today"></span>
+        <span class="dot">•</span>
+        <span id="phrase">La visión guía la acción.</span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const phrases = [
+      "La visión guía la acción.",
+      "Primero claridad, después ejecución.",
+      "Toda gran obra nace como una idea ordenada.",
+      "Hoy diseño con luz y actúo con precisión.",
+      "Notion piensa. ClickUp ejecuta. Kajabi entrega.",
+      "El caos entra aquí y sale convertido en dirección."
+    ];
+
+    const today = new Date();
+
+    const formattedDate = today.toLocaleDateString("es-ES", {
+      weekday: "long",
+      day: "numeric",
+      month: "long"
+    });
+
+    document.getElementById("today").textContent =
+      formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+
+    const dayIndex = today.getDate() % phrases.length;
+    document.getElementById("phrase").textContent = phrases[dayIndex];
+  </script>
+</body>
+</html>
