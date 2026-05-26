@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fruta Hasta Medianoche</title>
+  <title>Fruta Hasta Mañana 12:30</title>
 
   <style>
     :root {
@@ -141,7 +141,7 @@
     .subtitle {
       grid-area: subtitle;
       margin: 16px 0 0;
-      max-width: 390px;
+      max-width: 430px;
       color: rgba(42, 23, 0, 0.68);
       font-size: 15px;
       line-height: 1.5;
@@ -392,7 +392,7 @@
     <h1>Hoy sólo fruta</h1>
 
     <p class="subtitle">
-      Mantén tu energía ligera hasta medianoche.
+      Desde las 15:00 hasta mañana a las 12:30. Ligero, limpio y enfocado.
     </p>
 
     <div class="countdown">
@@ -415,10 +415,10 @@
     <div class="progress-card">
       <div class="progress-top">
         <div>
-          <span class="progress-label">Progreso del día</span>
+          <span class="progress-label">Progreso del reto</span>
           <strong id="percent">0%</strong>
         </div>
-        <span class="progress-mini">hasta medianoche</span>
+        <span class="progress-mini">hasta mañana 12:30</span>
       </div>
 
       <div class="progress">
@@ -512,16 +512,16 @@
           c2: "rgba(255, 88, 88, 0.15)",
           accent: "#ffa640",
           glow: "rgba(255, 166, 64, 0.55)",
-          message: "Mitad del día. Sigue presente."
+          message: "Mediodía cerca. Mantén la dirección."
         },
         {
           hour: 14,
-          phase: "Solar",
+          phase: "Inicio cercano",
           c1: "rgba(255, 204, 79, 0.28)",
           c2: "rgba(255, 126, 54, 0.17)",
           accent: "#ffcf5f",
           glow: "rgba(255, 207, 95, 0.52)",
-          message: "Energía solar. Hoy ganas con una elección simple."
+          message: "Prepárate. A las 15:00 empieza el pacto."
         },
         {
           hour: 16,
@@ -548,7 +548,7 @@
           c2: "rgba(34, 184, 255, 0.13)",
           accent: "#9d7cff",
           glow: "rgba(157, 124, 255, 0.48)",
-          message: "Último tramo. Respira. Hoy terminas limpio."
+          message: "Último tramo de la noche. Respira y sigue."
         },
         {
           hour: 22,
@@ -557,7 +557,7 @@
           c2: "rgba(119, 255, 213, 0.12)",
           accent: "#87f7d4",
           glow: "rgba(135, 247, 212, 0.42)",
-          message: "Casi hecho. Quédate contigo hasta medianoche."
+          message: "Quédate contigo. Mañana lo agradecerás."
         }
       ];
 
@@ -589,13 +589,42 @@
         messageEl.textContent = theme.message;
       }
 
+      function getChallengeWindow(now) {
+        const todayStart = new Date(now);
+        todayStart.setHours(15, 0, 0, 0);
+
+        const todayEnd = new Date(now);
+        todayEnd.setHours(12, 30, 0, 0);
+
+        let start;
+        let end;
+
+        if (now >= todayStart) {
+          start = todayStart;
+          end = new Date(now);
+          end.setDate(end.getDate() + 1);
+          end.setHours(12, 30, 0, 0);
+        } else if (now <= todayEnd) {
+          start = new Date(now);
+          start.setDate(start.getDate() - 1);
+          start.setHours(15, 0, 0, 0);
+
+          end = todayEnd;
+        } else {
+          start = todayStart;
+          end = new Date(now);
+          end.setDate(end.getDate() + 1);
+          end.setHours(12, 30, 0, 0);
+        }
+
+        return { start, end };
+      }
+
       function updateCountdown() {
         const now = new Date();
+        const challenge = getChallengeWindow(now);
 
-        const midnight = new Date(now);
-        midnight.setHours(24, 0, 0, 0);
-
-        const difference = midnight.getTime() - now.getTime();
+        const difference = challenge.end.getTime() - now.getTime();
         const totalSeconds = Math.max(0, Math.floor(difference / 1000));
 
         const hours = Math.floor(totalSeconds / 3600);
@@ -606,12 +635,11 @@
         minutesEl.textContent = pad(minutes);
         secondsEl.textContent = pad(seconds);
 
-        const secondsPassed =
-          now.getHours() * 3600 +
-          now.getMinutes() * 60 +
-          now.getSeconds();
+        const totalChallengeTime = challenge.end.getTime() - challenge.start.getTime();
+        const elapsedTime = now.getTime() - challenge.start.getTime();
 
-        const progress = Math.min(100, (secondsPassed / 86400) * 100);
+        let progress = (elapsedTime / totalChallengeTime) * 100;
+        progress = Math.max(0, Math.min(100, progress));
 
         barEl.style.width = progress + "%";
         percentEl.textContent = Math.floor(progress) + "%";
