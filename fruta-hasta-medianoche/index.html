@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fruta Hasta Medianoche</title>
+
+  <style>
+    :root {
+      --c1: rgba(255, 203, 76, 0.28);
+      --c2: rgba(91, 255, 174, 0.16);
+      --accent: #ffd76a;
+      --glow: rgba(255, 215, 106, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #0b0b0b;
+      color: #ffffff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .widget {
+      width: 100%;
+      max-width: 540px;
+      position: relative;
+      overflow: hidden;
+      padding: 30px;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at top left, var(--c1), transparent 34%),
+        radial-gradient(circle at bottom right, var(--c2), transparent 38%),
+        linear-gradient(145deg, #141414, #050505);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.6);
+      transition: background 1s ease;
+    }
+
+    .glow {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(50px);
+      pointer-events: none;
+      opacity: 0.65;
+    }
+
+    .glow-1 {
+      width: 190px;
+      height: 190px;
+      top: -70px;
+      right: -60px;
+      background: var(--glow);
+      animation: floatOne 7s ease-in-out infinite alternate;
+    }
+
+    .glow-2 {
+      width: 140px;
+      height: 140px;
+      left: -60px;
+      bottom: 20px;
+      background: var(--c2);
+      animation: floatTwo 8s ease-in-out infinite alternate;
+    }
+
+    .header,
+    h1,
+    .subtitle,
+    .countdown,
+    .progress-card,
+    .message,
+    .fruits {
+      position: relative;
+      z-index: 2;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .badge,
+    .phase {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .badge {
+      color: var(--accent);
+    }
+
+    .phase {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 9vw, 68px);
+      line-height: 0.9;
+      letter-spacing: -0.07em;
+    }
+
+    .subtitle {
+      margin: 16px 0 28px;
+      max-width: 360px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 11px;
+    }
+
+    .box {
+      padding: 18px 10px 16px;
+      border-radius: 24px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.075);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .box strong {
+      display: block;
+      font-size: clamp(34px, 10vw, 56px);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      text-shadow: 0 0 24px var(--glow);
+    }
+
+    .box span {
+      display: block;
+      margin-top: 7px;
+      color: rgba(255, 255, 255, 0.46);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .progress-card {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 26px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.045));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow:
+        0 0 38px var(--glow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .progress-label {
+      display: block;
+      margin-bottom: 2px;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .progress-top strong {
+      display: block;
+      color: #ffffff;
+      font-size: clamp(42px, 11vw, 72px);
+      line-height: 0.95;
+      font-weight: 950;
+      letter-spacing: -0.07em;
+      text-shadow: 0 0 28px var(--glow);
+    }
+
+    .progress-mini {
+      margin-top: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .progress {
+      height: 28px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+        inset 0 8px 18px rgba(0, 0, 0, 0.28);
+    }
+
+    .bar {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, var(--accent), #fff4bd 55%, #ffffff);
+      box-shadow:
+        0 0 26px var(--glow),
+        0 0 50px var(--glow);
+      transition: width 0.6s ease;
+    }
+
+    .message {
+      min-height: 46px;
+      margin: 20px 0 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .fruits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 20px;
+    }
+
+    .fruits span {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.075);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 22px;
+      animation: pulse 2.8s ease-in-out infinite;
+    }
+
+    .fruits span:nth-child(2) { animation-delay: 0.15s; }
+    .fruits span:nth-child(3) { animation-delay: 0.3s; }
+    .fruits span:nth-child(4) { animation-delay: 0.45s; }
+    .fruits span:nth-child(5) { animation-delay: 0.6s; }
+    .fruits span:nth-child(6) { animation-delay: 0.75s; }
+
+    @keyframes floatOne {
+      from {
+        transform: translate(0, 0) scale(1);
+      }
+
+      to {
+        transform: translate(-25px, 30px) scale(1.15);
+      }
+    }
+
+    @keyframes floatTwo {
+      from {
+        transform: translate(0, 0) scale(1);
+      }
+
+      to {
+        transform: translate(28px, -22px) scale(1.1);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.78;
+      }
+
+      50% {
+        transform: translateY(-4px);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 12px;
+      }
+
+      .widget {
+        padding: 24px 20px;
+        border-radius: 26px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .countdown {
+        gap: 8px;
+      }
+
+      .box {
+        padding: 15px 6px 13px;
+        border-radius: 20px;
+      }
+
+      .progress-card {
+        padding: 18px;
+      }
+
+      .progress-top {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .progress {
+        height: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="widget">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <div class="header">
+      <span class="badge">Reto de hoy</span>
+      <span class="phase" id="phase">Modo fruta</span>
+    </div>
+
+    <h1>Hoy sólo fruta</h1>
+
+    <p class="subtitle">
+      Mantén tu energía ligera hasta medianoche.
+    </p>
+
+    <div class="countdown">
+      <div class="box">
+        <strong id="hours">00</strong>
+        <span>horas</span>
+      </div>
+
+      <div class="box">
+        <strong id="minutes">00</strong>
+        <span>min</span>
+      </div>
+
+      <div class="box">
+        <strong id="seconds">00</strong>
+        <span>seg</span>
+      </div>
+    </div>
+
+    <div class="progress-card">
+      <div class="progress-top">
+        <div>
+          <span class="progress-label">Progreso del día</span>
+          <strong id="percent">0%</strong>
+        </div>
+        <span class="progress-mini">hasta medianoche</span>
+      </div>
+
+      <div class="progress">
+        <div class="bar" id="bar"></div>
+      </div>
+    </div>
+
+    <p class="message" id="message">
+      Hoy eliges fruta, agua y claridad.
+    </p>
+
+    <div class="fruits">
+      <span>🍓</span>
+      <span>🍊</span>
+      <span>🍍</span>
+      <span>🥝</span>
+      <span>🍇</span>
+      <span>🍉</span>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const hoursEl = document.getElementById("hours");
+      const minutesEl = document.getElementById("minutes");
+      const secondsEl = document.getElementById("seconds");
+      const barEl = document.getElementById("bar");
+      const percentEl = document.getElementById("percent");
+      const messageEl = document.getElementById("message");
+      const phaseEl = document.getElementById("phase");
+
+      const phases = [
+        {
+          hour: 0,
+          phase: "Madrugada",
+          c1: "rgba(76, 85, 255, 0.24)",
+          c2: "rgba(0, 190, 255, 0.13)",
+          accent: "#8da2ff",
+          glow: "rgba(120, 135, 255, 0.5)",
+          message: "Empieza limpio. Hoy eliges fruta, agua y calma."
+        },
+        {
+          hour: 2,
+          phase: "Noche profunda",
+          c1: "rgba(118, 80, 255, 0.24)",
+          c2: "rgba(255, 95, 160, 0.13)",
+          accent: "#b493ff",
+          glow: "rgba(180, 147, 255, 0.48)",
+          message: "No necesitas negociar. Sólo seguir tu decisión."
+        },
+        {
+          hour: 4,
+          phase: "Antes del sol",
+          c1: "rgba(255, 132, 79, 0.25)",
+          c2: "rgba(255, 208, 90, 0.14)",
+          accent: "#ffb35c",
+          glow: "rgba(255, 166, 92, 0.5)",
+          message: "Nuevo día cerca. Manténlo simple."
+        },
+        {
+          hour: 6,
+          phase: "Amanecer",
+          c1: "rgba(255, 212, 92, 0.28)",
+          c2: "rgba(102, 255, 177, 0.16)",
+          accent: "#ffd86b",
+          glow: "rgba(255, 216, 107, 0.52)",
+          message: "Fruta, foco y claridad. Vas muy bien."
+        },
+        {
+          hour: 8,
+          phase: "Mañana verde",
+          c1: "rgba(82, 255, 158, 0.26)",
+          c2: "rgba(43, 198, 111, 0.15)",
+          accent: "#63f5a1",
+          glow: "rgba(99, 245, 161, 0.48)",
+          message: "Cada hora cuenta. Tu disciplina se fortalece."
+        },
+        {
+          hour: 10,
+          phase: "Media mañana",
+          c1: "rgba(169, 255, 93, 0.24)",
+          c2: "rgba(255, 221, 78, 0.15)",
+          accent: "#caff6b",
+          glow: "rgba(202, 255, 107, 0.45)",
+          message: "Sigue ligero. No rompas el pacto."
+        },
+        {
+          hour: 12,
+          phase: "Mediodía",
+          c1: "rgba(255, 173, 51, 0.3)",
+          c2: "rgba(255, 88, 88, 0.15)",
+          accent: "#ffa640",
+          glow: "rgba(255, 166, 64, 0.55)",
+          message: "Mitad del día. Sigue presente."
+        },
+        {
+          hour: 14,
+          phase: "Solar",
+          c1: "rgba(255, 204, 79, 0.28)",
+          c2: "rgba(255, 126, 54, 0.17)",
+          accent: "#ffcf5f",
+          glow: "rgba(255, 207, 95, 0.52)",
+          message: "Energía solar. Hoy ganas con una elección simple."
+        },
+        {
+          hour: 16,
+          phase: "Tropical",
+          c1: "rgba(255, 79, 133, 0.25)",
+          c2: "rgba(255, 214, 86, 0.16)",
+          accent: "#ff6f9f",
+          glow: "rgba(255, 111, 159, 0.48)",
+          message: "Cuando aparezca el impulso, vuelve al pacto."
+        },
+        {
+          hour: 18,
+          phase: "Atardecer",
+          c1: "rgba(255, 116, 64, 0.28)",
+          c2: "rgba(154, 86, 255, 0.16)",
+          accent: "#ff7d5c",
+          glow: "rgba(255, 125, 92, 0.52)",
+          message: "Ya has avanzado mucho. No rompas la cadena."
+        },
+        {
+          hour: 20,
+          phase: "Noche",
+          c1: "rgba(107, 79, 255, 0.26)",
+          c2: "rgba(34, 184, 255, 0.13)",
+          accent: "#9d7cff",
+          glow: "rgba(157, 124, 255, 0.48)",
+          message: "Último tramo. Respira. Hoy terminas limpio."
+        },
+        {
+          hour: 22,
+          phase: "Cierre",
+          c1: "rgba(52, 70, 180, 0.24)",
+          c2: "rgba(119, 255, 213, 0.12)",
+          accent: "#87f7d4",
+          glow: "rgba(135, 247, 212, 0.42)",
+          message: "Casi hecho. Quédate contigo hasta medianoche."
+        }
+      ];
+
+      function pad(value) {
+        return String(value).padStart(2, "0");
+      }
+
+      function getCurrentPhase(hour) {
+        let current = phases[0];
+
+        for (let i = 0; i < phases.length; i++) {
+          if (hour >= phases[i].hour) {
+            current = phases[i];
+          }
+        }
+
+        return current;
+      }
+
+      function updateTheme(now) {
+        const theme = getCurrentPhase(now.getHours());
+
+        document.documentElement.style.setProperty("--c1", theme.c1);
+        document.documentElement.style.setProperty("--c2", theme.c2);
+        document.documentElement.style.setProperty("--accent", theme.accent);
+        document.documentElement.style.setProperty("--glow", theme.glow);
+
+        phaseEl.textContent = theme.phase;
+        messageEl.textContent = theme.message;
+      }
+
+      function updateCountdown() {
+        const now = new Date();
+
+        const midnight = new Date(now);
+        midnight.setHours(24, 0, 0, 0);
+
+        const difference = midnight.getTime() - now.getTime();
+        const totalSeconds = Math.max(0, Math.floor(difference / 1000));
+
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        hoursEl.textContent = pad(hours);
+        minutesEl.textContent = pad(minutes);
+        secondsEl.textContent = pad(seconds);
+
+        const secondsPassed =
+          now.getHours() * 3600 +
+          now.getMinutes() * 60 +
+          now.getSeconds();
+
+        const progress = Math.min(100, (secondsPassed / 86400) * 100);
+
+        barEl.style.width = progress + "%";
+        percentEl.textContent = Math.floor(progress) + "%";
+
+        updateTheme(now);
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    });
+  </script>
+</body>
+</html>
